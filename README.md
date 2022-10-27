@@ -22,8 +22,8 @@ Install dependencies
 
 ```bash
 # clone project
-git clone https://github.com/YourGithubName/your-repo-name
-cd your-repo-name
+git clone https://github.com/alinutzal/scaleTrackML
+cd scaleTrackML
 
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.9
