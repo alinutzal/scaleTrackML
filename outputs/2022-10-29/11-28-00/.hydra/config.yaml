@@ -1,0 +1,5 @@
+optimizer:
+  _target_: my_app.Optimizer
+  params:
+    algo: SGD
+    lr: 0.01

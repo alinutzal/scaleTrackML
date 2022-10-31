@@ -1,4 +1,11 @@
 import pyrootutils
+import numpy as np
+# External imports
+import matplotlib.pyplot as plt
+import torch
+
+
+from datamodules.components.track_utils import get_metrics
 
 root = pyrootutils.setup_root(
     search_from=__file__,
@@ -90,6 +97,36 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
 
     # for predictions use trainer.predict(...)
     # predictions = trainer.predict(model=model, dataloaders=dataloaders, ckpt_path=cfg.ckpt_path)
+    all_efficiencies, all_purities = [], []
+    all_cuts = np.linspace(0.0, 1.0, 11)
+
+    with torch.no_grad():
+        for cut in all_cuts:
+
+            model.hparams.edge_cut = cut
+            pred_results = trainer.predict(model=model, datamodule=datamodule, ckpt_path=cfg.ckpt_path)
+            mean_efficiency, mean_purity = get_metrics(pred_results)
+
+            all_efficiencies.append(mean_efficiency)
+            all_purities.append(mean_purity)
+            
+    print(all_efficiencies)
+    print(all_purities)
+
+    plt.figure(figsize=(12, 8))
+    plt.plot(all_cuts, all_efficiencies, label="Efficiency")
+    plt.plot(all_cuts, all_purities, label="Purity")
+    plt.legend()
+    plt.title("Performance", fontsize=24), plt.xlabel("Edge cut", fontsize=18), plt.ylabel(
+        "Eff and Purity of GNN", fontsize=18);
+    plt.savefig('gnnenp.png')   
+
+    plt.figure(figsize=(12, 8))
+    plt.plot(all_efficiencies, all_purities, label="AUC")
+    plt.legend()
+    plt.title("Performance", fontsize=24), plt.xlabel("Efficiency", fontsize=18), plt.ylabel(
+        "Purity", fontsize=18);
+    plt.savefig('gnnauc.png') 
 
     metric_dict = trainer.callback_metrics
 

@@ -1,0 +1,3 @@
+optimizer:
+  _target_: my_app.Optimizer
+  params: ???

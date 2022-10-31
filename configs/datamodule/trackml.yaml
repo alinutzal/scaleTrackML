@@ -1,0 +1,7 @@
+_target_: src.datamodules.trackml_datamodule.TRACKMLDataModule
+data_dir: ${paths.data_dir}
+batch_size: 1
+datatype_names: [train, val, test, test]
+datatype_split: [80, 10, 10, 10]
+num_workers: 10
+pin_memory: False

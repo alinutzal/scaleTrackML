@@ -1,0 +1,30 @@
+_target_: src.models.trackml_module.VanillaGNNLitModule
+weight: 2
+regime: ["pid"]
+cell_channels: 0
+edge_cut: 0.5
+warmup: 0
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: 0.006
+  weight_decay: 0.0
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau #StepLR
+  _partial_: true
+  mode: min
+  factor: 0.1 #gamma: 0.3 #
+  patience: 10 #step_size: 8 #
+
+net:
+  _target_: src.models.components.agnn.ResAGNN #gcn.VanillaGCN
+  in_channels: 3
+  hidden: 64
+  n_graph_iters: 8
+  nb_node_layer: 3
+  nb_edge_layer: 3
+  emb_channels: 0
+  layernorm: True
+  hidden_activation: Tanh #ReLU
