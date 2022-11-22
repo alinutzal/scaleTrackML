@@ -1,7 +1,12 @@
 _target_: src.datamodules.trackml_datamodule.TRACKMLDataModule
-data_dir: ${paths.data_dir}
-batch_size: 1
+data_dir: /fs/scratch/PLS0144/alina/embedding_processed/1GeV_pt_cut #${paths.data_dir}
+#data_dir: /users/PLS0129/ysu0053/exatrkx-inference/notebooks/data/small
 datatype_names: [train, val, test, test]
 datatype_split: [80, 10, 10, 10]
-num_workers: 10
-pin_memory: False
+num_workers: 16
+pin_memory: True
+#loader: 
+#  _target_: torch_geometric.loader.DataLoader
+batch_size: 1
+loader: "full"
+neighb: 5

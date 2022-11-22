@@ -232,8 +232,10 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
             lr_scale = min(
                 1.0, float(self.current_epoch + 1) / self.hparams["warmup"]
             )
-            #for pg in optimizer.param_groups:
-            self.optimizers().param_groups[0]["lr"] = lr_scale * self.optimizers().param_groups[0]["lr"]
+            for pg in optimizer.param_groups:
+                pg["lr"] = lr_scale * pg["lr"]
+
+                #optimizer.param_groups[0]["lr"] = lr_scale * optimizer.param_groups[0]["lr"]
 
         # update params
         optimizer.step(closure=optimizer_closure)

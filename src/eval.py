@@ -1,9 +1,10 @@
 import pyrootutils
 import numpy as np
 # External imports
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import torch
-
 
 from datamodules.components.track_utils import get_metrics
 
@@ -109,9 +110,14 @@ def evaluate(cfg: DictConfig) -> Tuple[dict, dict]:
 
             all_efficiencies.append(mean_efficiency)
             all_purities.append(mean_purity)
-            
-    print(all_efficiencies)
-    print(all_purities)
+    
+    log.info("Results!")
+    print(cfg.paths.output_dir)
+    with open(Path(cfg.paths.output_dir, "results.log"), "w") as file:
+        np.savetxt(file, np.around((all_cuts,all_efficiencies,all_purities), decimals=4),fmt='%.4f')
+    print(np.around(all_cuts,decimals=4))
+    print(np.around(all_efficiencies,decimals=4))
+    print(np.around(all_purities,decimals=4))
 
     plt.figure(figsize=(12, 8))
     plt.plot(all_cuts, all_efficiencies, label="Efficiency")

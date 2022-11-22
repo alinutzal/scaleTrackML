@@ -12,7 +12,9 @@ defaults:
 
 task_name: "eval"
 
-tags: ["dev"]
+tags: ["trackml", "ResAGNN"]
 
 # passing checkpoint path is necessary for evaluation
-ckpt_path: /home/alinal/projects/scaleTrackML/logs/train/runs/2022-10-30_17-46-11/checkpoints/epoch_048.ckpt
+ckpt_path: /users/PLS0129/ysu0053/scaleTrackML/logs/train/runs/2022-11-07_11-18-54/checkpoints/epoch_024.ckpt
+
+

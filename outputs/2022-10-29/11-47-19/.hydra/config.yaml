@@ -1,7 +1,0 @@
-db:
-  db:
-    class: tutorial.objects_example.objects.MySQLConnection
-    params:
-      host: localhost
-      user: root
-      password: 1234

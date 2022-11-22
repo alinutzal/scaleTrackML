@@ -31,5 +31,5 @@ trainer:
   detect_anomaly: true # raise exception if NaN or +/-inf is detected in any tensor
 
 datamodule:
-  num_workers: 10 # debuggers don't like multiprocessing
-  pin_memory: False # disable gpu memory pin
+  num_workers: 16 # debuggers don't like multiprocessing
+  pin_memory: True # disable gpu memory pin

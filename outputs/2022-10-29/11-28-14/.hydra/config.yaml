@@ -1,5 +1,0 @@
-optimizer:
-  _target_: my_app.Optimizer
-  hparams:
-    algo: SGD
-    lr: 0.01

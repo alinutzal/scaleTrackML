@@ -12,11 +12,11 @@ optimizer:
   weight_decay: 0.0
 
 scheduler:
-  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau #StepLR
+  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau #StepLR #.
   _partial_: true
   mode: min
-  factor: 0.1 #gamma: 0.3 #
-  patience: 10 #step_size: 8 #
+  factor: 0.1 # gamma: 0.3 #
+  patience: 10 #step_size: 8
 
 net:
   _target_: src.models.components.agnn.ResAGNN #gcn.VanillaGCN
@@ -28,3 +28,5 @@ net:
   emb_channels: 0
   layernorm: True
   hidden_activation: Tanh #ReLU
+  edge_cut: 0.5
+  warmup: 0
