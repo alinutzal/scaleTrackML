@@ -1,5 +1,7 @@
 _target_: src.datamodules.trackml_datamodule.TRACKMLDataModule
-data_dir: /fs/scratch/PLS0144/alina/embedding_processed/1GeV_pt_cut #${paths.data_dir}
+#Updated by GP
+data_dir: /users/PLS0150/gprasad/byDrLazar/scaleTrackML/embedding_processed/1GeV_pt_cut #${paths.data_dir}
+#data_dir: /fs/scratch/PLS0144/alina/embedding_processed/1GeV_pt_cut #${paths.data_dir}
 #data_dir: /users/PLS0129/ysu0053/exatrkx-inference/notebooks/data/small
 datatype_names: [train, val, test, test]
 datatype_split: [80, 10, 10, 10]

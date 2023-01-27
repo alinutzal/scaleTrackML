@@ -11,12 +11,16 @@ optimizer:
   lr: 0.006
   weight_decay: 0.0
 
-scheduler:
-  _target_: torch.optim.lr_scheduler.ReduceLROnPlateau #StepLR #.
+scheduler:    
+  #Changes by GP
+  #_target_: torch.optim.lr_scheduler.ReduceLROnPlateau #StepLR #.
+  _target_: torch.optim.lr_scheduler.StepLR
   _partial_: true
-  mode: min
-  factor: 0.1 # gamma: 0.3 #
-  patience: 10 #step_size: 8
+  #mode: min
+  #factor: 0.1 # gamma: 0.3 #
+  #patience: 10 #step_size: 8
+  gamma: 0.3
+  step_size: 8
 
 net:
   _target_: src.models.components.agnn.ResAGNN #gcn.VanillaGCN
