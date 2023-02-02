@@ -139,6 +139,24 @@ class ResAGNN(nn.Module):
             layernorm,
         )
 
+    def message_step(self, x, edge_index, input_x):
+        x_inital = x
+
+        # Apply edge network
+        e = torch.sigmoid(self.edge_network(x, edge_index))
+
+        # Apply node network
+        x = self.node_network(x, e, edge_index)
+
+        # Shortcut connect the inputs onto the hidden representation
+        x = torch.cat([x, input_x], dim=-1)
+
+        # Residual connection
+        x = x_inital + x
+        
+        return x
+
+        
     def forward(self, x, edge_index):
         input_x = x
 
@@ -149,19 +167,8 @@ class ResAGNN(nn.Module):
 
         # Loop over iterations of edge and node networks
         for i in range(self.n_graph_iters):
-            x_inital = x
-
-            # Apply edge network
-            e = torch.sigmoid(self.edge_network(x, edge_index))
-
-            # Apply node network
-            x = self.node_network(x, e, edge_index)
-
-            # Shortcut connect the inputs onto the hidden representation
-            x = torch.cat([x, input_x], dim=-1)
-
-            # Residual connection
-            x = x_inital + x
+            
+            x = checkpoint(self.message_step, x, edge_index, input_x)
 
         return self.edge_network(x, edge_index)
     

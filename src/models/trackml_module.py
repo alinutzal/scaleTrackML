@@ -14,6 +14,10 @@ from torch.utils.checkpoint import checkpoint
 
 from sklearn.metrics import roc_auc_score
 
+from src.models.components import agnn, gcn, gnn_base
+
+#torch.backends.cuda.matmul.allow_tf32 = True
+#torch.backends.cudnn.allow_tf32 = True
 
 class VanillaGNNLitModule(LightningModule): #GNNBase
     """Example of LightningModule for MNIST classification.
@@ -39,11 +43,13 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
         weight: int = 2,
         regime: List = ["pid"],
         edge_cut: float = 0.5,
-        warmup: int = 0
+        warmup: int = 200,
+        lr: float = 0.006,
+        weight_decay: float = 0.0
     ):
         super().__init__()
         self.save_hyperparameters(logger=False, ignore=["net"])
-        
+        #self.model = agnn.ResAGNN(hparams=self.hparams)
         """
         Initialise the Lightning Module that can scan over different GNN training regimes
         """
@@ -51,7 +57,12 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
  
     def forward(self, x: torch.Tensor, edge_index):
         return self.net(x, edge_index)
-        
+    '''
+    def configure_optimizers(self):
+        return torch.optim.AdamW(
+            params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay
+        )
+    '''    
     def configure_optimizers(self):
         """Choose what optimizers and learning-rate schedulers to use in your optimization.
         Normally you'd need one. But in the case of GANs or similar you might have multiple.
@@ -72,7 +83,7 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
                 },
             }
         return {"optimizer": optimizer}
-
+    
     def get_input_data(self, batch):
 
         if self.hparams["cell_channels"] > 0:
@@ -122,7 +133,7 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
             output, truth_sample.float(), weight=manual_weights, pos_weight=weight
         )
 
-        self.log("train/loss", loss, on_epoch=True, on_step=False, batch_size=10000)
+        self.log("train/loss", loss, on_epoch=True, on_step=False, batch_size=10)
 
         return loss
 
@@ -147,7 +158,7 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
                 "eff": eff,
                 "pur": pur,
                 "current_lr": current_lr,
-            }, on_epoch=True, on_step=False, batch_size=10000
+            }, on_epoch=True, on_step=False, batch_size=10
         )
 
     def shared_evaluation(self, batch, batch_idx, log=False):
@@ -213,7 +224,7 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
         outputs = self.shared_evaluation(batch, batch_idx, log=False)
 
         return outputs
-
+    
     def optimizer_step(
         self,
         epoch,
@@ -240,6 +251,7 @@ class VanillaGNNLitModule(LightningModule): #GNNBase
         # update params
         optimizer.step(closure=optimizer_closure)
         optimizer.zero_grad()   
+
 
 if __name__ == "__main__":
     import hydra
